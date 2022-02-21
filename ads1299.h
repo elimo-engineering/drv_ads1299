@@ -109,7 +109,7 @@ typedef struct
   uint8_t revId;
   uint8_t devId;
   uint8_t nuCh;
-} id_t;
+} ads1299_id_t;
 
 typedef struct
 {
@@ -320,30 +320,30 @@ typedef struct
   void (*SetStart)(uint8_t state);
   void (*SetPWDN)(uint8_t state);
 
-  id_t        id;
-  config1_t   config1;
-  config2_t   config2;
-  config3_t   config3;
-  loff_t      loff;
-  ch1set_t    ch1set;
-  ch2set_t    ch2set;
-  ch3set_t    ch3set;
-  ch4set_t    ch4set;
-  ch5set_t    ch5set;
-  ch6set_t    ch6set;
-  ch7set_t    ch7set;
-  ch8set_t    ch8set;
-  biassensp_t biassensp;
-  biassensn_t biassensn;
-  loffsensp_t loffsensp;
-  loffsensn_t loffsensn;
-  loffflip_t  loffflip;
-  loffstatp_t loffstatp;
-  loffstatn_t loffstatn;
-  gpio_t      gpio;
-  misc1_t     misc1;
-  misc2_t     misc2;
-  config4_t   config4;
+  ads1299_id_t id;
+  config1_t    config1;
+  config2_t    config2;
+  config3_t    config3;
+  loff_t       loff;
+  ch1set_t     ch1set;
+  ch2set_t     ch2set;
+  ch3set_t     ch3set;
+  ch4set_t     ch4set;
+  ch5set_t     ch5set;
+  ch6set_t     ch6set;
+  ch7set_t     ch7set;
+  ch8set_t     ch8set;
+  biassensp_t  biassensp;
+  biassensn_t  biassensn;
+  loffsensp_t  loffsensp;
+  loffsensn_t  loffsensn;
+  loffflip_t   loffflip;
+  loffstatp_t  loffstatp;
+  loffstatn_t  loffstatn;
+  gpio_t       gpio;
+  misc1_t      misc1;
+  misc2_t      misc2;
+  config4_t    config4;
 
 } ads1299_t;
 
