@@ -313,6 +313,7 @@ typedef struct
 
 typedef struct
 {
+  void (*DelayUs)(uint32_t delay);
   void (*DelayMs)(uint32_t delay);
   void (*Transfer)(uint8_t tx[], uint8_t rx[], uint16_t len);
   void (*SetCS)(uint8_t state);
@@ -359,6 +360,7 @@ void     ADS1299_StandBy(ads1299_t *ads1299);
 void     ADS1299_StartAdc(ads1299_t *ads1299);
 void     ADS1299_StopAdc(ads1299_t *ads1299);
 uint32_t ADS1299_ReadAdc(ads1299_t *ads1299);
+uint32_t ADS1299_ReadAdcContinuous(ads1299_t *ads1299, uint8_t *rx);
 void     ADS1299_EnableContRead(ads1299_t *ads1299);
 void     ADS1299_DisableContRead(ads1299_t *ads1299);
 

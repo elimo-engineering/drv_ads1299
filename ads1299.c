@@ -1,3 +1,4 @@
+#include <string.h>
 #include "ads1299.h"
 
 /*!
@@ -7,8 +8,11 @@
 void ADS1299_HardReset(ads1299_t *ads1299)
 {
   ads1299->SetReset(0);
-  ads1299->DelayMs(1000);
+  /* From datasheet: Reset down min 2*tCLK, which is 1uS*/
+  ads1299->DelayUs(5);
   ads1299->SetReset(1);
+  /* From datasheet: wait after RST min 18*tCLK, which is 9uS*/
+  ads1299->DelayUs(20);
 }
 
 /*!
@@ -17,18 +21,30 @@ void ADS1299_HardReset(ads1299_t *ads1299)
 */
 void ADS1299_Init(ads1299_t *ads1299)
 {
-  // Set PWDN inactive
+  ads1299->SetReset(1);
+
+  /* Set PWDN inactive */
   ads1299->SetPWDN(1);
 
-  ads1299->SetStart(0);
+  /* From datasheet:
+   * - tPOR min (2^18)*tCLK, which is 131mS
+   * - tBG is time for VCAP to reach 1.1V
+   * - time before reset pulse is the longest between tPOR and tBG
+   *
+   * we use 500ms for safety, you can measure tBG to optimise
+   * */
+  ads1299->DelayMs(500);
 
-  // Hard reset (After that we have 250 SPS)
+  /* Hard reset (After that we have 250 SPS) */
   ADS1299_HardReset(ads1299);
 
-  // Stop Read Data Continuously mode
+  /* Stop Read Data Continuously mode */
   ADS1299_DisableContRead(ads1299);
+  ads1299->DelayMs(10);
 
-  //TODO
+  /* Using internal reference, so set PDB_REFBUF = 1 */
+  ADS1299_SetConfig3State(ads1299, 0xE0);
+  ADS1299_GetConfig3State(ads1299);
 }
 
 /*!
@@ -89,6 +105,8 @@ void ADS1299_Reset(ads1299_t *ads1299)
 
   ads1299->SetCS(0);
   ads1299->Transfer(writeCmd, rx, 3);
+  /* need to wait 18tclk after this command, which would be 9usec @ 2Mhz */
+  ads1299->DelayUs(10);
   ads1299->SetCS(1);
 }
 
@@ -203,6 +221,24 @@ uint32_t ADS1299_ReadAdc(ads1299_t *ads1299)
   ads1299->SetCS(1);
 
   //TODO Parsing channels data in `msg` or something
+
+  return msg;
+}
+
+/*!
+\brief Function for reading the ADC value, continuous mode.
+*/
+uint32_t ADS1299_ReadAdcContinuous(ads1299_t *ads1299, uint8_t *rx)
+{
+  int32_t msg                = 0;
+  uint8_t readCmd[3 + 3 * 4] = { 0 };
+
+  memset(readCmd, 0x00, sizeof(readCmd));
+  memset(rx, 0, sizeof(readCmd));
+
+  ads1299->SetCS(0);
+  ads1299->Transfer(readCmd, rx, sizeof(readCmd));
+  ads1299->SetCS(1);
 
   return msg;
 }
