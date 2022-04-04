@@ -360,7 +360,7 @@ void     ADS1299_StandBy(ads1299_t *ads1299);
 void     ADS1299_StartAdc(ads1299_t *ads1299);
 void     ADS1299_StopAdc(ads1299_t *ads1299);
 uint32_t ADS1299_ReadAdc(ads1299_t *ads1299);
-uint32_t ADS1299_ReadAdcContinuous(ads1299_t *ads1299, uint8_t *rx);
+uint32_t ADS1299_ReadAdcContinuous(ads1299_t *ads1299, uint8_t *dummy_buf, uint8_t *rx_buf, uint16_t buflen);
 void     ADS1299_EnableContRead(ads1299_t *ads1299);
 void     ADS1299_DisableContRead(ads1299_t *ads1299);
 

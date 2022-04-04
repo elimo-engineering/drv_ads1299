@@ -228,16 +228,15 @@ uint32_t ADS1299_ReadAdc(ads1299_t *ads1299)
 /*!
 \brief Function for reading the ADC value, continuous mode.
 */
-uint32_t ADS1299_ReadAdcContinuous(ads1299_t *ads1299, uint8_t *rx)
+uint32_t ADS1299_ReadAdcContinuous(ads1299_t *ads1299, uint8_t *dummy_buf, uint8_t *rx_buf, uint16_t buflen)
 {
-  int32_t msg                = 0;
-  uint8_t readCmd[3 + 3 * 4] = { 0 };
+  int32_t msg = 0;
 
-  memset(readCmd, 0x00, sizeof(readCmd));
-  memset(rx, 0, sizeof(readCmd));
+  memset(dummy_buf, 0x00, buflen);
+  memset(rx_buf, 0, buflen);
 
   ads1299->SetCS(0);
-  ads1299->Transfer(readCmd, rx, sizeof(readCmd));
+  ads1299->Transfer(dummy_buf, rx_buf, buflen);
   ads1299->SetCS(1);
 
   return msg;
