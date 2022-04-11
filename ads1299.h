@@ -381,6 +381,8 @@ void ADS1299_SetCh5SetState(ads1299_t *ads1299, uint8_t regVal);
 void ADS1299_SetCh6SetState(ads1299_t *ads1299, uint8_t regVal);
 void ADS1299_SetCh7SetState(ads1299_t *ads1299, uint8_t regVal);
 void ADS1299_SetCh8SetState(ads1299_t *ads1299, uint8_t regVal);
+void ADS1299_SetBiasSensPState(ads1299_t *ads1299, uint8_t regVal);
+void ADS1299_SetBiasSensNState(ads1299_t *ads1299, uint8_t regVal);
 void ADS1299_SetLoffSensPState(ads1299_t *ads1299, uint8_t regVal);
 void ADS1299_SetLoffSensNState(ads1299_t *ads1299, uint8_t regVal);
 /* --------------------------------------------------------- */
@@ -413,29 +415,43 @@ void ADS1299_GetMisc2State(ads1299_t *ads1299);
 /* --------------------------------------------------------- */
 
 /*                 Parsing Functions Section                 */
-void ADS1299_ParseIdReg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseConfig1Reg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseConfig2Reg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseConfig3Reg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseConfig4Reg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseLoffReg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseCh1SetReg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseCh2SetReg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseCh3SetReg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseCh4SetReg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseCh5SetReg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseCh6SetReg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseCh7SetReg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseCh8SetReg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseBiasSensPReg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseBiasSensNReg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseLoffSensPReg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseLoffSensNReg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseLoffFlipReg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseLoffStatPReg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseLoffStatNReg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseGpioReg(ads1299_t *ads1299, uint8_t regVal);
-void ADS1299_ParseMisc1Reg(ads1299_t *ads1299, uint8_t regVal);
+void    ADS1299_ParseIdReg(ads1299_t *ads1299, uint8_t regVal);
+void    ADS1299_ParseConfig1Reg(ads1299_t *ads1299, uint8_t regVal);
+uint8_t ADS1299_SerialiseConfig1Reg(ads1299_t *ads1299);
+void    ADS1299_ParseConfig2Reg(ads1299_t *ads1299, uint8_t regVal);
+uint8_t ADS1299_SerialiseConfig2Reg(ads1299_t *ads1299);
+void    ADS1299_ParseConfig3Reg(ads1299_t *ads1299, uint8_t regVal);
+uint8_t ADS1299_SerialiseConfig3Reg(ads1299_t *ads1299);
+void    ADS1299_ParseConfig4Reg(ads1299_t *ads1299, uint8_t regVal);
+uint8_t ADS1299_SerialiseConfig4Reg(ads1299_t *ads1299);
+void    ADS1299_ParseLoffReg(ads1299_t *ads1299, uint8_t regVal);
+void    ADS1299_ParseCh1SetReg(ads1299_t *ads1299, uint8_t regVal);
+uint8_t ADS1299_SerialiseCh1SetReg(ads1299_t *ads1299);
+void    ADS1299_ParseCh2SetReg(ads1299_t *ads1299, uint8_t regVal);
+uint8_t ADS1299_SerialiseCh2SetReg(ads1299_t *ads1299);
+void    ADS1299_ParseCh3SetReg(ads1299_t *ads1299, uint8_t regVal);
+uint8_t ADS1299_SerialiseCh2SetReg(ads1299_t *ads1299);
+void    ADS1299_ParseCh4SetReg(ads1299_t *ads1299, uint8_t regVal);
+uint8_t ADS1299_SerialiseCh4SetReg(ads1299_t *ads1299);
+void    ADS1299_ParseCh5SetReg(ads1299_t *ads1299, uint8_t regVal);
+uint8_t ADS1299_SerialiseCh5SetReg(ads1299_t *ads1299);
+void    ADS1299_ParseCh6SetReg(ads1299_t *ads1299, uint8_t regVal);
+uint8_t ADS1299_SerialiseCh6SetReg(ads1299_t *ads1299);
+void    ADS1299_ParseCh7SetReg(ads1299_t *ads1299, uint8_t regVal);
+uint8_t ADS1299_SerialiseCh7SetReg(ads1299_t *ads1299);
+void    ADS1299_ParseCh8SetReg(ads1299_t *ads1299, uint8_t regVal);
+uint8_t ADS1299_SerialiseCh8SetReg(ads1299_t *ads1299);
+void    ADS1299_ParseBiasSensPReg(ads1299_t *ads1299, uint8_t regVal);
+uint8_t ADS1299_SerialiseBiasSensPReg(ads1299_t *ads1299);
+void    ADS1299_ParseBiasSensNReg(ads1299_t *ads1299, uint8_t regVal);
+uint8_t ADS1299_SerialiseBiasSensNReg(ads1299_t *ads1299);
+void    ADS1299_ParseLoffSensPReg(ads1299_t *ads1299, uint8_t regVal);
+void    ADS1299_ParseLoffSensNReg(ads1299_t *ads1299, uint8_t regVal);
+void    ADS1299_ParseLoffFlipReg(ads1299_t *ads1299, uint8_t regVal);
+void    ADS1299_ParseLoffStatPReg(ads1299_t *ads1299, uint8_t regVal);
+void    ADS1299_ParseLoffStatNReg(ads1299_t *ads1299, uint8_t regVal);
+void    ADS1299_ParseGpioReg(ads1299_t *ads1299, uint8_t regVal);
+void    ADS1299_ParseMisc1Reg(ads1299_t *ads1299, uint8_t regVal);
 /* --------------------------------------------------------- */
 
 /* ________________________________________________________ */

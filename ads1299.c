@@ -43,7 +43,7 @@ void ADS1299_Init(ads1299_t *ads1299)
   ads1299->DelayMs(10);
 
   /* Using internal reference, so set PDB_REFBUF = 1 */
-  ADS1299_SetConfig3State(ads1299, 0xE0);
+  ADS1299_SetConfig3State(ads1299, ADS1299_CONFIG3_SETUP_REFBUF);
   ADS1299_GetConfig3State(ads1299);
 }
 
@@ -571,6 +571,21 @@ void ADS1299_ParseConfig1Reg(ads1299_t *ads1299, uint8_t regVal)
 }
 
 /*!
+\brief Serialise Configuration 1 Register
+\param [out] ads1299 Initialized variable of type ads1299_t
+\returns Configuration 1 Register value
+*/
+uint8_t ADS1299_SerialiseConfig1Reg(ads1299_t *ads1299)
+{
+  uint8_t regVal = 0;
+  regVal |= ((ads1299->config1.daisyEn >> 6) & 0x40);
+  regVal |= ((ads1299->config1.clkEn >> 5) & 0x20);
+  regVal |= ((ads1299->config1.dataRate) & 0x07);
+
+  return regVal;
+}
+
+/*!
 \brief Parsing of Configuration 2 Register result
 \param [out] ads1299 Initialized variable of type ads1299_t
 \param [in] regVal Configuration 2 Register value
@@ -580,6 +595,21 @@ void ADS1299_ParseConfig2Reg(ads1299_t *ads1299, uint8_t regVal)
   ads1299->config2.intCal  = (regVal & 0x10) >> 4;
   ads1299->config2.calAmp  = (regVal & 0x04) >> 2;
   ads1299->config2.calFreq = (regVal & 0x03);
+}
+
+/*!
+\brief Serialise Configuration 2 Register
+\param [out] ads1299 Initialized variable of type ads1299_t
+\returns Configuration 2 Register value
+*/
+uint8_t ADS1299_SerialiseConfig2Reg(ads1299_t *ads1299)
+{
+  uint8_t regVal = 0;
+  regVal |= ((ads1299->config2.intCal >> 4) & 0x14);
+  regVal |= ((ads1299->config2.calAmp >> 2) & 0x04);
+  regVal |= ((ads1299->config2.calFreq) & 0x03);
+
+  return regVal;
 }
 
 /*!
@@ -598,6 +628,24 @@ void ADS1299_ParseConfig3Reg(ads1299_t *ads1299, uint8_t regVal)
 }
 
 /*!
+\brief Serialise Configuration 3 Register
+\param [out] ads1299 Initialized variable of type ads1299_t
+\returns Configuration 3 Register value
+*/
+uint8_t ADS1299_SerialiseConfig3Reg(ads1299_t *ads1299)
+{
+  uint8_t regVal = 0;
+  regVal |= ((ads1299->config3.pdRefBuf >> 7) & 0x80);
+  regVal |= ((ads1299->config3.biasMeas >> 4) & 0x10);
+  regVal |= ((ads1299->config3.biasRefInt >> 3) & 0x08);
+  regVal |= ((ads1299->config3.pdBias >> 2) & 0x04);
+  regVal |= ((ads1299->config3.biasLoffSens >> 1) & 0x02);
+  regVal |= ((ads1299->config3.biasStat) & 0x01);
+
+  return regVal;
+}
+
+/*!
 \brief Parsing of Configuration 4 Register result
 \param [out] ads1299 Initialized variable of type ads1299_t
 \param [in] regVal Configuration 4 Register value
@@ -606,6 +654,20 @@ void ADS1299_ParseConfig4Reg(ads1299_t *ads1299, uint8_t regVal)
 {
   ads1299->config4.singleShot = (regVal & 0x08) >> 3;
   ads1299->config4.pdLoffComp = (regVal & 0x02) >> 1;
+}
+
+/*!
+\brief Serialise Configuration 4 Register
+\param [out] ads1299 Initialized variable of type ads1299_t
+\returns Configuration 4 Register value
+*/
+uint8_t ADS1299_SerialiseConfig4Reg(ads1299_t *ads1299)
+{
+  uint8_t regVal = 0;
+  regVal |= ((ads1299->config4.singleShot >> 3) & 0x08);
+  regVal |= ((ads1299->config4.pdLoffComp >> 1) & 0x02);
+
+  return regVal;
 }
 
 /*!
@@ -634,6 +696,22 @@ void ADS1299_ParseCh1SetReg(ads1299_t *ads1299, uint8_t regVal)
 }
 
 /*!
+\brief Serialises Individual Channel Settings Register from the current context
+\param [out] ads1299 Initialized variable of type ads1299_t
+\returns Individual Channel Settings Register value
+*/
+uint8_t ADS1299_SerialiseCh1SetReg(ads1299_t *ads1299)
+{
+  uint8_t regVal = 0;
+  regVal |= ((ads1299->ch1set.pd1 << 7) & 0x80);
+  regVal |= ((ads1299->ch1set.gain1 << 4) & 0x70);
+  regVal |= ((ads1299->ch1set.srb2 << 3) & 0x08);
+  regVal |= (ads1299->ch1set.mux1 & 0x07);
+
+  return regVal;
+}
+
+/*!
 \brief Parsing of Individual Channel 2 Settings Register result
 \param [out] ads1299 Initialized variable of type ads1299_t
 \param [in] regVal Individual Channel Settings Register value
@@ -644,6 +722,22 @@ void ADS1299_ParseCh2SetReg(ads1299_t *ads1299, uint8_t regVal)
   ads1299->ch2set.gain2 = (regVal & 0x70) >> 4;
   ads1299->ch2set.srb2  = (regVal & 0x08) >> 3;
   ads1299->ch2set.mux2  = (regVal & 0x07);
+}
+
+/*!
+\brief Serialises Individual Channel Settings Register from the current context
+\param [out] ads1299 Initialized variable of type ads1299_t
+\returns Individual Channel Settings Register value
+*/
+uint8_t ADS1299_SerialiseCh2SetReg(ads1299_t *ads1299)
+{
+  uint8_t regVal = 0;
+  regVal |= ((ads1299->ch2set.pd2 << 7) & 0x80);
+  regVal |= ((ads1299->ch2set.gain2 << 4) & 0x70);
+  regVal |= ((ads1299->ch2set.srb2 << 3) & 0x08);
+  regVal |= (ads1299->ch2set.mux2 & 0x07);
+
+  return regVal;
 }
 
 /*!
@@ -660,6 +754,22 @@ void ADS1299_ParseCh3SetReg(ads1299_t *ads1299, uint8_t regVal)
 }
 
 /*!
+\brief Serialises Individual Channel Settings Register from the current context
+\param [out] ads1299 Initialized variable of type ads1299_t
+\returns Individual Channel Settings Register value
+*/
+uint8_t ADS1299_SerialiseCh3SetReg(ads1299_t *ads1299)
+{
+  uint8_t regVal = 0;
+  regVal |= ((ads1299->ch3set.pd3 << 7) & 0x80);
+  regVal |= ((ads1299->ch3set.gain3 << 4) & 0x70);
+  regVal |= ((ads1299->ch3set.srb2 << 3) & 0x08);
+  regVal |= (ads1299->ch3set.mux3 & 0x07);
+
+  return regVal;
+}
+
+/*!
 \brief Parsing of Individual Channel 4 Settings Register result
 \param [out] ads1299 Initialized variable of type ads1299_t
 \param [in] regVal Individual Channel Settings Register value
@@ -670,6 +780,22 @@ void ADS1299_ParseCh4SetReg(ads1299_t *ads1299, uint8_t regVal)
   ads1299->ch4set.gain4 = (regVal & 0x70) >> 4;
   ads1299->ch4set.srb2  = (regVal & 0x08) >> 3;
   ads1299->ch4set.mux4  = (regVal & 0x07);
+}
+
+/*!
+\brief Serialises Individual Channel Settings Register from the current context
+\param [out] ads1299 Initialized variable of type ads1299_t
+\returns Individual Channel Settings Register value
+*/
+uint8_t ADS1299_SerialiseCh4SetReg(ads1299_t *ads1299)
+{
+  uint8_t regVal = 0;
+  regVal |= ((ads1299->ch4set.pd4 << 7) & 0x80);
+  regVal |= ((ads1299->ch4set.gain4 << 4) & 0x70);
+  regVal |= ((ads1299->ch4set.srb2 << 3) & 0x08);
+  regVal |= (ads1299->ch4set.mux4 & 0x07);
+
+  return regVal;
 }
 
 /*!
@@ -686,6 +812,22 @@ void ADS1299_ParseCh5SetReg(ads1299_t *ads1299, uint8_t regVal)
 }
 
 /*!
+\brief Serialises Individual Channel Settings Register from the current context
+\param [out] ads1299 Initialized variable of type ads1299_t
+\returns Individual Channel Settings Register value
+*/
+uint8_t ADS1299_SerialiseCh5SetReg(ads1299_t *ads1299)
+{
+  uint8_t regVal = 0;
+  regVal |= ((ads1299->ch5set.pd5 << 7) & 0x80);
+  regVal |= ((ads1299->ch5set.gain5 << 4) & 0x70);
+  regVal |= ((ads1299->ch5set.srb2 << 3) & 0x08);
+  regVal |= (ads1299->ch5set.mux5 & 0x07);
+
+  return regVal;
+}
+
+/*!
 \brief Parsing of Individual Channel 6 Settings Register result
 \param [out] ads1299 Initialized variable of type ads1299_t
 \param [in] regVal Individual Channel Settings Register value
@@ -696,6 +838,22 @@ void ADS1299_ParseCh6SetReg(ads1299_t *ads1299, uint8_t regVal)
   ads1299->ch6set.gain6 = (regVal & 0x70) >> 4;
   ads1299->ch6set.srb2  = (regVal & 0x08) >> 3;
   ads1299->ch6set.mux6  = (regVal & 0x07);
+}
+
+/*!
+\brief Serialises Individual Channel Settings Register from the current context
+\param [out] ads1299 Initialized variable of type ads1299_t
+\returns Individual Channel Settings Register value
+*/
+uint8_t ADS1299_SerialiseCh6SetReg(ads1299_t *ads1299)
+{
+  uint8_t regVal = 0;
+  regVal |= ((ads1299->ch6set.pd6 << 7) & 0x80);
+  regVal |= ((ads1299->ch6set.gain6 << 4) & 0x70);
+  regVal |= ((ads1299->ch6set.srb2 << 3) & 0x08);
+  regVal |= (ads1299->ch6set.mux6 & 0x07);
+
+  return regVal;
 }
 
 /*!
@@ -712,6 +870,22 @@ void ADS1299_ParseCh7SetReg(ads1299_t *ads1299, uint8_t regVal)
 }
 
 /*!
+\brief Serialises Individual Channel Settings Register from the current context
+\param [out] ads1299 Initialized variable of type ads1299_t
+\returns Individual Channel Settings Register value
+*/
+uint8_t ADS1299_SerialiseCh7SetReg(ads1299_t *ads1299)
+{
+  uint8_t regVal = 0;
+  regVal |= ((ads1299->ch7set.pd7 << 7) & 0x80);
+  regVal |= ((ads1299->ch7set.gain7 << 4) & 0x70);
+  regVal |= ((ads1299->ch7set.srb2 << 3) & 0x08);
+  regVal |= (ads1299->ch7set.mux7 & 0x07);
+
+  return regVal;
+}
+
+/*!
 \brief Parsing of Individual Channel 8 Settings Register result
 \param [out] ads1299 Initialized variable of type ads1299_t
 \param [in] regVal Individual Channel Settings Register value
@@ -722,6 +896,22 @@ void ADS1299_ParseCh8SetReg(ads1299_t *ads1299, uint8_t regVal)
   ads1299->ch8set.gain8 = (regVal & 0x70) >> 4;
   ads1299->ch8set.srb2  = (regVal & 0x08) >> 3;
   ads1299->ch8set.mux8  = (regVal & 0x07);
+}
+
+/*!
+\brief Serialises Individual Channel Settings Register from the current context
+\param [out] ads1299 Initialized variable of type ads1299_t
+\returns Individual Channel Settings Register value
+*/
+uint8_t ADS1299_SerialiseCh8SetReg(ads1299_t *ads1299)
+{
+  uint8_t regVal = 0;
+  regVal |= ((ads1299->ch8set.pd8 << 7) & 0x80);
+  regVal |= ((ads1299->ch8set.gain8 << 4) & 0x70);
+  regVal |= ((ads1299->ch8set.srb2 << 3) & 0x08);
+  regVal |= (ads1299->ch8set.mux8 & 0x07);
+
+  return regVal;
 }
 
 /*!
@@ -742,6 +932,26 @@ void ADS1299_ParseBiasSensPReg(ads1299_t *ads1299, uint8_t regVal)
 }
 
 /*!
+\brief Serialise Bias Drive Positive Derivation Register
+\param [out] ads1299 Initialized variable of type ads1299_t
+\returns Bias Drive Positive Derivation Register value
+*/
+uint8_t ADS1299_SerialiseBiasSensPReg(ads1299_t *ads1299)
+{
+  uint8_t regVal = 0;
+  regVal |= ((ads1299->biassensp.biasP8 >> 7) & 0x80);
+  regVal |= ((ads1299->biassensp.biasP7 >> 6) & 0x40);
+  regVal |= ((ads1299->biassensp.biasP6 >> 5) & 0x20);
+  regVal |= ((ads1299->biassensp.biasP5 >> 4) & 0x10);
+  regVal |= ((ads1299->biassensp.biasP4 >> 3) & 0x08);
+  regVal |= ((ads1299->biassensp.biasP3 >> 2) & 0x04);
+  regVal |= ((ads1299->biassensp.biasP2 >> 1) & 0x02);
+  regVal |= ((ads1299->biassensp.biasP1) & 0x01);
+
+  return regVal;
+}
+
+/*!
 \brief Parsing of Bias Drive Negative Derivation Register result
 \param [out] ads1299 Initialized variable of type ads1299_t
 \param [in] regVal Bias Drive Negative Derivation Register value
@@ -756,6 +966,26 @@ void ADS1299_ParseBiasSensNReg(ads1299_t *ads1299, uint8_t regVal)
   ads1299->biassensn.biasN3 = (regVal & 0x04) >> 2;
   ads1299->biassensn.biasN2 = (regVal & 0x02) >> 1;
   ads1299->biassensn.biasN1 = (regVal & 0x01);
+}
+
+/*!
+\brief Serialise Bias Drive Negative Derivation Register
+\param [out] ads1299 Initialized variable of type ads1299_t
+\returns Bias Drive Negative Derivation Register value
+*/
+uint8_t ADS1299_SerialiseBiasSensNReg(ads1299_t *ads1299)
+{
+  uint8_t regVal = 0;
+  regVal |= ((ads1299->biassensn.biasN8 >> 7) & 0x80);
+  regVal |= ((ads1299->biassensn.biasN7 >> 6) & 0x40);
+  regVal |= ((ads1299->biassensn.biasN6 >> 5) & 0x20);
+  regVal |= ((ads1299->biassensn.biasN5 >> 4) & 0x10);
+  regVal |= ((ads1299->biassensn.biasN4 >> 3) & 0x08);
+  regVal |= ((ads1299->biassensn.biasN3 >> 2) & 0x04);
+  regVal |= ((ads1299->biassensn.biasN2 >> 1) & 0x02);
+  regVal |= ((ads1299->biassensn.biasN1) & 0x01);
+
+  return regVal;
 }
 
 /*!
@@ -983,6 +1213,24 @@ void ADS1299_SetCh7SetState(ads1299_t *ads1299, uint8_t regVal)
 void ADS1299_SetCh8SetState(ads1299_t *ads1299, uint8_t regVal)
 {
   ADS1299_WriteReg(ads1299, ADS1299_CH8SET_REG, regVal);
+}
+
+/*!
+\brief Function for setting Positive Bias Sensing Register value
+\param [in] regVal Value of register to set
+*/
+void ADS1299_SetBiasSensPState(ads1299_t *ads1299, uint8_t regVal)
+{
+  ADS1299_WriteReg(ads1299, ADS1299_BIAS_SENSP_REG, regVal);
+}
+
+/*!
+\brief Function for setting Negative Bias Sensing Register value
+\param [in] regVal Value of register to set
+*/
+void ADS1299_SetBiasSensNState(ads1299_t *ads1299, uint8_t regVal)
+{
+  ADS1299_WriteReg(ads1299, ADS1299_BIAS_SENSN_REG, regVal);
 }
 
 /*!
